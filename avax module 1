@@ -1,0 +1,47 @@
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.18;
+
+contract VotingContract {
+    mapping(address => bool) public hasVoted;
+    uint public totalVotes;
+    uint public maxVotes = 100;
+
+    event VoteCasted(address voter);
+    event VotingCompleted(uint totalVotes);
+
+    function castVote() public {
+        require(!hasVoted[msg.sender], "You have already voted!");
+        require(totalVotes < maxVotes, "Maximum votes reached!");
+
+        // Voting logic
+        hasVoted[msg.sender] = true;
+        totalVotes++;
+
+        emit VoteCasted(msg.sender);
+
+        // Example assert statement
+        assert(totalVotes <= maxVotes);
+    }
+
+    function endVoting() public {
+        require(totalVotes >= maxVotes, "Voting is not yet completed!");
+
+        // End voting logic
+        // ...
+
+        emit VotingCompleted(totalVotes);
+
+        // Example revert statement
+        revert("Voting results are being audited");
+    }
+
+    function claimReward() public {
+        require(hasVoted[msg.sender], "You haven't voted yet!");
+
+        // Claim reward logic
+        // ...
+
+        // Example require statement
+        require(totalVotes >= 50, "Minimum voting threshold not reached");
+    }
+}
