@@ -1,60 +1,49 @@
-# VotingContract
+# TicketPurchaseContract
 
-VotingContract is a Solidity smart contract that allows users to cast votes, end the voting process, and claim rewards. It implements the `require()`, `assert()`, and `revert()` statements to enforce voting rules and handle different scenarios.
+TicketPurchaseContract is a Solidity smart contract that enables users to purchase tickets and process refunds. It ensures that the ticket price is correct, tracks the number of tickets sold, and handles ticket purchases and refunds.
 
 ## Contract Overview
 
-The `VotingContract` keeps track of the total votes casted, maximum votes allowed, and whether a user has voted or not. It provides functions for casting votes, ending the voting process, and claiming rewards.
+The `TicketPurchaseContract` keeps track of the total number of tickets available (`totalTickets`), the price per ticket (`PerTicketPrice`), and the number of tickets sold (`ticketsSold`). It provides functions for purchasing tickets and refunding tickets.
 
 ### Contract Functions
 
-#### `castVote()`
+#### `purchaseTicket(uint ticketPrice)`
 
-Allows a user to cast their vote. It performs the following checks:
+Allows a user to purchase tickets by providing the `ticketPrice` as payment. It performs the following checks:
 
-- Ensures that the user hasn't already voted.
-- Verifies that the maximum vote limit hasn't been reached.
+- Ensures that the `ticketPrice` is a multiple of the `PerTicketPrice`.
+- Verifies that the number of tickets sold (`ticketsSold`) plus one does not exceed the total number of tickets (`totalTickets`).
 
-After successful validation, the user's vote is recorded, and the total vote count is incremented.
+Upon successful validation, the tickets are purchased, the number of tickets sold is updated, and an event is emitted to indicate the ticket purchase.
 
-#### `endVoting()`
+#### `refundTicket(uint numTickets)`
 
-Ends the voting process. It performs the following checks:
+Allows the contract owner to refund tickets by specifying the number of tickets (`numTickets`) to be refunded. It performs the following checks:
 
-- Verifies that the total votes casted meets the maximum voting threshold.
+- Ensures that the number of tickets sold (`ticketsSold`) is greater than or equal to the number of tickets to be refunded (`numTickets`).
 
-Upon successful validation, the end voting logic is executed.
-
-#### `claimReward()`
-
-Allows a user to claim their reward after voting. It performs the following checks:
-
-- Ensures that the user has casted their vote.
-- Verifies that the minimum voting threshold has been reached.
-
-Upon successful validation, the reward claiming logic is executed.
+Upon successful validation, the specified number of tickets is refunded, and the number of tickets sold is updated accordingly.
 
 ### Contract Events
 
-The `VotingContract` emits the following events:
+The `TicketPurchaseContract` emits the following event:
 
-- `VoteCasted`: Triggered when a user casts their vote.
-- `VotingCompleted`: Triggered when the voting process is completed, providing the total number of votes casted.
+- `TicketPurchased`: Triggered when a user purchases tickets, providing the buyer's address and the ticket price.
 
 ## Usage
 
-To use the `VotingContract`, follow these steps:
+To use the `TicketPurchaseContract`, follow these steps:
 
 1. Deploy the contract on a compatible Ethereum network.
 2. Interact with the contract using a compatible wallet or DApp to perform the following actions:
-   - Cast votes using the `castVote()` function.
-   - End the voting process using the `endVoting()` function.
-   - Claim rewards using the `claimReward()` function.
+   - Purchase tickets by calling the `purchaseTicket()` function and providing the correct `ticketPrice`.
+   - Refund tickets by calling the `refundTicket()` function and specifying the number of tickets to be refunded.
 
 ## Author
 
- Aditya singh
+Aditya Singh
 
 ## License
 
-The VotingContract is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+The TicketPurchaseContract is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
