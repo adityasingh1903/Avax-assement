@@ -1,47 +1,38 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.18;
 
-contract VotingContract {
-    mapping(address => bool) public hasVoted;
-    uint public totalVotes;
-    uint public maxVotes = 100;
+contract TicketPurchaseContract {
+    uint public totalTickets = 100;
+    uint public PerTicketPrice = 10;
+    uint public ticketsSold;
 
-    event VoteCasted(address voter);
-    event VotingCompleted(uint totalVotes);
+    event TicketPurchased(address buyer, uint ticketPrice);
 
-    function castVote() public {
-        require(!hasVoted[msg.sender], "You have already voted!");
-        require(totalVotes < maxVotes, "Maximum votes reached!");
+    function purchaseTicket(uint ticketPrice) public payable {
+        // require statement
+        require(ticketPrice % PerTicketPrice == 0, "Incorrect ticket price!");
 
-        // Voting logic
-        hasVoted[msg.sender] = true;
-        totalVotes++;
+        // assert statement
+        assert(ticketsSold + 1 <= totalTickets);
 
-        emit VoteCasted(msg.sender);
+        // ticket purchase logic
+        uint numTickets = ticketPrice / PerTicketPrice;
+        ticketsSold += numTickets;
 
-        // Example assert statement
-        assert(totalVotes <= maxVotes);
+        // revert statement
+        if (ticketsSold > totalTickets) {
+            revert("No more tickets available!");
+        }
+
+        // emit event
+        emit TicketPurchased(msg.sender, ticketPrice);
     }
 
-    function endVoting() public {
-        require(totalVotes >= maxVotes, "Voting is not yet completed!");
+    function refundTicket(uint numTickets) public {
+        // require statement
+        require(ticketsSold >= numTickets, "Not enough tickets sold!");
 
-        // End voting logic
-        // ...
-
-        emit VotingCompleted(totalVotes);
-
-        // Example revert statement
-        revert("Voting results are being audited");
-    }
-
-    function claimReward() public {
-        require(hasVoted[msg.sender], "You haven't voted yet!");
-
-        // Claim reward logic
-        // ...
-
-        // Example require statement
-        require(totalVotes >= 50, "Minimum voting threshold not reached");
+        // refund ticket logic
+        ticketsSold -= numTickets;
     }
 }
